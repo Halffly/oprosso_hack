@@ -15,7 +15,7 @@ def prototype(request):
 			api = Api.getPrototypes()
 		return JsonResponse(api, status=api['status'])
 	elif request.method == 'POST':
-		api = Api.createPrototype(request.POST, request.FILES, request.body)
+		api = Api.createPrototype(request.FILES, request.body)
 		return JsonResponse(api, status=api['status'])
 	else:
 		raise Http404
