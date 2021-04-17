@@ -24,3 +24,8 @@ def detailsPrototype(request, id):
 	api = Api().getPrototype(id)
 	return JsonResponse(api, status=api['status'])
 
+@csrf_exempt
+def saveFile(request):
+	if request.method == 'POST':
+		api = Api.SaveFile(request.FILES)
+		return JsonResponse(api, status=api['status'])

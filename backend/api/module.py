@@ -1,9 +1,8 @@
 import json
 
 import requests
-from django.core.handlers.wsgi import WSGIRequest
 
-from api.models import Prototype, QuestionStep
+from api.models import Prototype, QuestionStep, File
 from api.models import Step
 
 
@@ -14,13 +13,6 @@ class Appetize:
 
 	def __init__(self, url):
 		self.url = url
-
-	def post(self, data, url):
-		headers = {
-			'Content-Type': 'application/json'
-		}
-		response = requests.post(url=url, headers=headers, data=data)
-		return response.json()
 
 	@property
 	def getPlatform(self):
@@ -34,7 +26,19 @@ class Appetize:
 			"url": self.url,
 			"platform": self.getPlatform
 		}
-		return self.post(data=data, url=self.apps)
+		url = "https://tok_43pe0nhffjy0vm8nbwnh849pd0@api.appetize.io/v1/apps"
+
+		payload = json.dumps({
+			"url": "https://trashbox.ru/files20/1425479_d892e0/com.supercell.clashofclans_14.0.4_1346.apk",
+			"platform": "android"
+		})
+		headers = {
+			'Content-Type': 'application/json'
+		}
+
+		response = requests.request("POST", url, headers=headers, data=payload)
+
+		print(response.text)
 
 
 class Api:
@@ -115,37 +119,51 @@ class Api:
 			}
 		}
 
+
 	@classmethod
-	def createPrototype(cls, FILES, body):
-		print(FILES, body)
-		POST = json.loads(body)
-		data = {
-			"title": POST.get("title"),
-			"isShow": POST.get("isShow", False),
-			"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
-		}
-		createKey = Appetize(POST.get("app")).createKey()
-		print(createKey)
-		if createKey.get("publicKey") is None:
-			cls.answer.update(cls.ErrorLink(createKey))
-			return cls.answer
-		prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
-		prototype.save()
-		step = POST.get("step", [])
-		for i in step:
-			data = {
-				"title": i.get("stepTitle"),
-				"text": i.get("stepText"),
-				"prototype": prototype,
-			}
-			questions = []
-			for question in i.get("questions"):
-				ques = QuestionStep(title=question)
-				ques.save()
-				questions.append(ques)
-			data.update({"question": questions})
-			Step(**data).save()
+	def SaveFile(cls, files):
+		print(files)
+		_file = files.get("file")
+		print(_file)
+		File(file=_file).save()
+		return cls.answer
+
+	@classmethod
+	def createPrototype(cls, FILES):
+		print(FILES)
 		cls.answer.update({
-			"message": "Success Create"
+			"status": 301,
+			"message": "Проблема с api"
 		})
 		return cls.answer
+		# POST = json.loads(body)
+		# data = {
+		# 	"title": POST.get("title"),
+		# 	"isShow": POST.get("isShow", False),
+		# 	"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
+		# }
+		# createKey = Appetize(POST.get("app")).createKey()
+		# print(createKey)
+		# if createKey.get("publicKey") is None:
+		# 	cls.answer.update(cls.ErrorLink(createKey))
+		# 	return cls.answer
+		# prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
+		# prototype.save()
+		# step = POST.get("step", [])
+		# for i in step:
+		# 	data = {
+		# 		"title": i.get("stepTitle"),
+		# 		"text": i.get("stepText"),
+		# 		"prototype": prototype,
+		# 	}
+		# 	questions = []
+		# 	for question in i.get("questions"):
+		# 		ques = QuestionStep(title=question)
+		# 		ques.save()
+		# 		questions.append(ques)
+		# 	data.update({"question": questions})
+		# 	Step(**data).save()
+		# cls.answer.update({
+		# 	"message": "Success Create"
+		# })
+		# return cls.answer

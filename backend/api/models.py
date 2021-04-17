@@ -22,6 +22,12 @@ class QuestionStep(models.Model):
 		return self.title
 
 
+class File(models.Model):
+	file = models.FileField(upload_to="application/")
+
+	def __str__(self):
+		return str(self.file.name)
+
 class Step(models.Model):
 	title = models.CharField(max_length=300)
 	text = models.TextField()
