@@ -27,7 +27,7 @@ export interface FullPrototypeData {
   publicKey: string;
   steps: Step[];
   isShow?: boolean;
-  img?: FormData;
+  img?: Blob;
   app?: string;
 }
 export interface Taps {
