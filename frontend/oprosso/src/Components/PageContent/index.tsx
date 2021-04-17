@@ -1,3 +1,4 @@
+import { Container } from "@material-ui/core";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import AnalyticsDetails from "../AnalyticsDetails";
@@ -8,7 +9,7 @@ import TestScreen from "../TestScreen";
 
 const PageContent = () => {
   return (
-    <div>
+    <Container maxWidth="lg">
       <main>
         <Switch>
           <Route path="/analytics/:id" exact>
@@ -28,7 +29,7 @@ const PageContent = () => {
           </Route>
         </Switch>
       </main>
-    </div>
+    </Container>
   );
 };
 

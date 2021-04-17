@@ -5,9 +5,9 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: "Montserrat",
   },
-  shadows: Array(25).fill('none') as Shadows,
+  shadows: Array(25).fill("none") as Shadows,
   palette: {
-      
+    primary: { main: "#E8463D" },
   },
   overrides: {},
 });
