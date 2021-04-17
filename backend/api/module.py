@@ -9,7 +9,7 @@ from api.models import Step
 
 class Appetize:
 	token = "tok_43pe0nhffjy0vm8nbwnh849pd0"
-	mainURl = f"https:{token}@api.appetize.io/v1/"
+	mainURl = f"https://{token}@api.appetize.io/v1/"
 	apps = mainURl + "apps"
 
 	def __init__(self, url):
