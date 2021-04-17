@@ -23,7 +23,7 @@ class Appetize:
 		return response.json()
 
 	@property
-	def checkPlatform(self):
+	def getPlatform(self):
 		if self.url.endwith(".apk"):
 			return "android"
 		else:
@@ -32,7 +32,7 @@ class Appetize:
 	def createKey(self):
 		data = {
 			"url": self.url,
-			"platform": self.checkPlatform
+			"platform": self.getPlatform
 		}
 		return self.post(data=data, url=self.apps)
 
@@ -116,12 +116,13 @@ class Api:
 		}
 
 	@classmethod
-	def createPrototype(cls, POST: WSGIRequest.POST, FILES, body):
-		print(POST, FILES, body)
+	def createPrototype(cls, FILES, body):
+		print(FILES, body)
+		POST = json.loads(body)
 		data = {
 			"title": POST.get("title"),
 			"isShow": POST.get("isShow", False),
-			"img": FILES.get("img")
+			"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
 		}
 		createKey = Appetize(POST.get("app")).createKey()
 		print(createKey)

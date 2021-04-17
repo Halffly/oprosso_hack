@@ -23,3 +23,4 @@ def prototype(request):
 def detailsPrototype(request, id):
 	api = Api().getPrototype(id)
 	return JsonResponse(api, status=api['status'])
+
