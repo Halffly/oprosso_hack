@@ -10,13 +10,17 @@ from api.module import Api
 def prototype(request):
 	if request.method == 'GET':
 		if request.GET.get("filter"):
-			api = Api.getPrototype(isShow=True)
+			api = Api.getPrototypes(isShow=True)
 		else:
-			api = Api.getPrototype()
+			api = Api.getPrototypes()
 		return JsonResponse(api, status=api['status'])
 	elif request.method == 'POST':
 		api = Api.createPrototype(request.POST, request.FILES, request.body)
 		return JsonResponse(api, status=api['status'])
 	else:
 		raise Http404
+
+def detailsPrototype(request, id):
+	api = Api().getPrototype(id)
+	return JsonResponse(api, status=api['status'])
 

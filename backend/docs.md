@@ -11,6 +11,27 @@ Option<br>
 filter:
     
     /api/prototype/?filter=isShow   
+**GET detail prototype**
+`/api/prototype/<int: id>` [GET]<br>
+<pre>
+    {
+        "data":	{
+            "id": number,
+            "title": string,
+            "views": number,
+            "ratings": number,
+            'img': string,
+            "isShow": string,
+            "publicKey": string,
+            'step': [{
+                  "id": number,
+                  "title": string,
+                  "text": string,
+                  "question": [string] 
+            }]
+        }
+    }
+</pre>
 
 **Create prototype**
 `/api/prototype/` [POST]<br>

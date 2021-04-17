@@ -23,7 +23,7 @@ class Appetize:
 		return response.json()
 
 	@property
-	def checkPlatform(self):
+	def getPlatform(self):
 		if self.url.endwith(".apk"):
 			return "android"
 		else:
@@ -32,7 +32,7 @@ class Appetize:
 	def createKey(self):
 		data = {
 			"url": self.url,
-			"platform": self.checkPlatform
+			"platform": self.getPlatform
 		}
 		return self.post(data=data, url=self.apps)
 
@@ -47,9 +47,15 @@ class Api:
 	@staticmethod
 	def parsePrototypes(prototypes) -> dict:
 		return {"data": [
-			{"id": prototype.id, "title": prototype.title, "views": prototype.views, "ratings": prototype.ratings,
-			 'img': prototype.img.url if prototype.img else None, "isShow": prototype.isShow,
-			 "publicKey": prototype.publicKey} for prototype in prototypes]}
+			{
+				"id": prototype.id,
+				"title": prototype.title,
+				"views": prototype.views,
+				"ratings": prototype.ratings,
+				'img': prototype.img.url if prototype.img else None,
+				"isShow": prototype.isShow,
+				"publicKey": prototype.publicKey
+			} for prototype in prototypes]}
 
 	@staticmethod
 	def ErrorLink(data) -> dict:
@@ -59,8 +65,15 @@ class Api:
 			"message": "The link to the mobile app was not specified correctly"
 		}
 
+	def ErrorNotExistPrototype(self, id):
+		return {
+			"status": 404,
+			"data": {},
+			"message": f"The prototype for this id({id}) does not exist"
+		}
+
 	@classmethod
-	def getPrototype(cls, **kwargs):
+	def getPrototypes(cls, **kwargs):
 		if kwargs.get("isShow"):
 			prototypes = Prototype.objects.filter(isShow=True).order_by("?")
 		else:
@@ -68,21 +81,48 @@ class Api:
 		cls.answer.update(cls.parsePrototypes(prototypes))
 		return cls.answer
 
-	@staticmethod
-	def parsePrototype(prototype):
-		return {"data": {"id": prototype.id, "title": prototype.title, "views": prototype.views,
-		                 "ratings": prototype.ratings,
-		                 'img': prototype.img.url if prototype.img else None, "isShow": prototype.isShow,
-		                 "publicKey": prototype.publicKey}}
+	def getPrototype(self, id):
+		prototype = Prototype.objects.filter(id=id).first()
+		if prototype is None:
+			self.answer.update(self.ErrorNotExistPrototype(id))
+			return self.answer
+		self.answer.update(self.__parsePrototype(prototype))
+		return self.answer
 
+	@staticmethod
+	def parseSteps(prototype):
+		steps = Step.objects.filter(prototype=prototype)
+		return [
+			{
+				"id": step.id,
+				"title": step.title,
+				"text": step.text,
+				"question": list(step.question)
+			}
+			for step in steps]
+
+	def __parsePrototype(self, prototype):
+		return {"data":
+			{
+				"id": prototype.id,
+				"title": prototype.title,
+				"views": prototype.views,
+				"ratings": prototype.ratings,
+				'img': prototype.img.url if prototype.img else None,
+				"isShow": prototype.isShow,
+				"publicKey": prototype.publicKey,
+				'step': self.parseSteps(prototype)
+			}
+		}
 
 	@classmethod
-	def createPrototype(cls, POST: WSGIRequest.POST, FILES, body):
-		print(POST, FILES, body)
+	def createPrototype(cls, FILES, body):
+		print(FILES, body)
+		POST = json.loads(body)
 		data = {
 			"title": POST.get("title"),
 			"isShow": POST.get("isShow", False),
-			"img": FILES.get("img")
+			"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
 		}
 		createKey = Appetize(POST.get("app")).createKey()
 		print(createKey)
