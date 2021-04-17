@@ -7,7 +7,7 @@ interface IProps extends Step {
   onClick: (id: number) => void;
   isActive?: boolean;
 }
-const StepCard = ({ onClick, title, text, id, isActive }: IProps) => {
+const StepCard = ({ onClick, stepTitle: title, stepText: text, id, isActive }: IProps) => {
   return (
     <Box
       style={{

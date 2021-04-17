@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { DropzoneArea } from "material-ui-dropzone";
 import React from "react";
+import { api } from "../../api/api";
 import {
   useAnalyticsPageStyles,
   useDropZoneStyles,
@@ -22,6 +23,68 @@ const CreateScreen = () => {
   const dropZoneClasses = useDropZoneStyles();
   const [photo, setPhoto] = React.useState<File[]>([]);
   const [steps, setSteps] = React.useState<Step[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const validatePrototype = () => {};
+  const saveHandler = async () => {
+    // if (!validatePrototype(prototype)) {
+    //   return;
+    // }
+    // (async () => {
+    //   try {
+    //     setIsLoading(true);
+    //     const isSuccess = await api.createProtorype(prototype);
+    //     isSuccess &&
+    //       (() => {
+    //         //
+    //       })();
+    //   } catch {
+    //     // enqueueSnackbar("Произошла неизвестная ошибка", { variant: "error" });
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // })();
+    console.log(photo[0]);
+    const img: Blob = new Blob(
+      [new Uint8Array(await photo[0].arrayBuffer())],
+      {
+        type: photo[0].type,
+      }
+    );
+    var fd = new FormData();
+    fd.append('file', img);
+    
+    console.log(fd);
+    let fileToBlob = async (file:File) => new Blob([new Uint8Array(await file.arrayBuffer())], {type: file.type });
+console.log(await fileToBlob(photo[0]));
+
+    api.createProtorype({
+      isShow: false,
+      title: "Дргое приложение",
+      app:
+        "https://trashbox.ru/files20/1425479_d892e0/com.supercell.clashofclans_14.0.4_1346.apk",
+      description:
+        "Международная картографическая компания, выпускающая одноимённые электронные справочники с картами городов с 1999 года.",
+      views: 20,
+      rate: 4.3,
+      img: fd,
+      id: 2,
+      publicKey: "publicKey",
+      steps: [
+        {
+          id: 2,
+          stepTitle: "Поделиться информацией",
+          stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
+
+          Шаги:
+          • Открыть приложение 2ГИС• Ввести в поиск «Google»
+          • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
+          • Выбрать приложение и адресата, отправить текст.
+          (Триггер завершения выполнения задания на устройстве.)`,
+          question: ["Заметил ли ты длину пути"],
+        },
+      ],
+    });
+  };
   return (
     <Box marginY={4}>
       <Grid container spacing={4}>
@@ -98,10 +161,10 @@ const CreateScreen = () => {
                 setSteps([
                   ...steps,
                   {
-                    title: "Сценарий 1:«Поделиться информацией»",
-                    text:
+                    stepTitle: "Сценарий 1:«Поделиться информацией»",
+                    stepText:
                       "В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google...",
-                    endQuestions: ["ВОпрос в конце"],
+                    question: ["ВОпрос в конце"],
                     id: steps.length,
                   },
                 ]);
@@ -150,9 +213,12 @@ const CreateScreen = () => {
                 backgroundColor: "#FE7B12",
                 borderRadius: 48,
               }}
+              onClick={saveHandler}
             >
               <Box marginX={10} marginY={1}>
-                <Typography style={{ color: "#FFF", fontWeight: 600 }}>Опубликовать</Typography>
+                <Typography style={{ color: "#FFF", fontWeight: 600 }}>
+                  Опубликовать
+                </Typography>
               </Box>
             </Button>
           </Box>
