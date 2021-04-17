@@ -13,19 +13,22 @@ export interface BackAnalytics {
 }
 export interface Step {
   id: number;
-  title: string;
-  text: string;
-  endQuestions: string[];
+  stepTitle: string;
+  stepText: string;
+  question: string[];
 }
 export interface FullPrototypeData {
   title: string;
   description: string;
   views: number;
   rate: number;
-  imageUrl: string;
+  imageUrl?: string;
   id: number;
   publicKey: string;
   steps: Step[];
+  isShow?: boolean;
+  img?: FormData;
+  app?: string;
 }
 export interface Taps {
   type: string;
