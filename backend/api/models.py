@@ -9,7 +9,14 @@ class Prototype(models.Model):
 	ratings = models.IntegerField(default=0)
 	img = models.ImageField("prototype/")
 	isShow = models.BooleanField(default=False)
+	description = models.TextField(null=True)
 	publicKey = models.TextField()  # Берем отсюда https://docs.appetize.io/api/create-new-app
+
+	def __str__(self):
+		return self.title
+
+class QuestionStep(models.Model):
+	title = models.TextField()
 
 	def __str__(self):
 		return self.title
@@ -18,7 +25,7 @@ class Prototype(models.Model):
 class Step(models.Model):
 	title = models.CharField(max_length=300)
 	text = models.TextField()
-	question = models.TextField()
+	question = models.ManyToManyField(QuestionStep)
 	prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)
 
 	def __str__(self):

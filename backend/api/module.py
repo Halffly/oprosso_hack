@@ -1,7 +1,9 @@
+import json
+
 import requests
 from django.core.handlers.wsgi import WSGIRequest
 
-from api.models import Prototype
+from api.models import Prototype, QuestionStep
 from api.models import Step
 
 
@@ -75,7 +77,8 @@ class Api:
 
 
 	@classmethod
-	def createPrototype(cls, POST: WSGIRequest.POST, FILES):
+	def createPrototype(cls, POST: WSGIRequest.POST, FILES, body):
+		print(POST, FILES, body)
 		data = {
 			"title": POST.get("title"),
 			"isShow": POST.get("isShow", False),
@@ -86,14 +89,21 @@ class Api:
 		if createKey.get("publicKey") is None:
 			cls.answer.update(cls.ErrorLink(createKey))
 			return cls.answer
-		prototype = Prototype(**data, publicKey=createKey.get("publicKey")).save()
-		for i in dict(POST).get("steps"):
+		prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
+		prototype.save()
+		step = json.loads(body)
+		for i in step:
 			data = {
 				"title": i.get("stepTitle"),
 				"text": i.get("stepText"),
-				"question": i.get("question"),
-				"prototype": prototype
+				"prototype": prototype,
 			}
+			questions = []
+			for question in i.get("questions"):
+				ques = QuestionStep(title=question)
+				ques.save()
+				questions.append(ques)
+			data.update({"question": questions})
 			Step(**data).save()
 		cls.answer.update({
 			"message": "Success Create"
