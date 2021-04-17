@@ -55,7 +55,7 @@ const CreateScreen = () => {
     
     console.log(fd);
     let fileToBlob = async (file:File) => new Blob([new Uint8Array(await file.arrayBuffer())], {type: file.type });
-console.log(await fileToBlob(photo[0]));
+// console.log(await fileToBlob(photo[0]));
 
     api.createProtorype({
       isShow: false,
@@ -66,7 +66,7 @@ console.log(await fileToBlob(photo[0]));
         "Международная картографическая компания, выпускающая одноимённые электронные справочники с картами городов с 1999 года.",
       views: 20,
       rate: 4.3,
-      img: fd,
+      img: await fileToBlob(photo[0]),
       id: 2,
       publicKey: "publicKey",
       steps: [
