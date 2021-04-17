@@ -131,7 +131,7 @@ class Api:
 			return cls.answer
 		prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
 		prototype.save()
-		step = json.loads(body)
+		step = POST.get("step", [])
 		for i in step:
 			data = {
 				"title": i.get("stepTitle"),
