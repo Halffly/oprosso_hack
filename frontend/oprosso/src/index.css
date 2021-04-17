@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.MuiDropzoneArea-root {
+  background-color: inherit !important;
+  border-radius: 18px !important;
+}
