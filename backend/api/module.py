@@ -24,7 +24,7 @@ class Appetize:
 
 	@property
 	def getPlatform(self):
-		if self.url.endwith(".apk"):
+		if self.url.endswith(".apk"):
 			return "android"
 		else:
 			return "ios"
