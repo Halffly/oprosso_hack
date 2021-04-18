@@ -23,11 +23,11 @@ export interface FullPrototypeData {
   views: number;
   rate: number;
   imageUrl?: string;
-  id: number;
+  id: string;
   publicKey: string;
   steps: Step[];
   isShow?: boolean;
-  img?: Blob;
+  img?: FormData;
   app?: string;
 }
 export interface Taps {

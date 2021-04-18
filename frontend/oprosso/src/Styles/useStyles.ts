@@ -52,6 +52,11 @@ export const useCardStyles = makeStyles((theme: Theme) => ({
     fontWeight: "bold",
     fontSize: 18,
   },
+  title: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: 600,
+  },
   subitle: {
     color: "#FFF",
     fontWeight: 500,
@@ -68,7 +73,7 @@ export const useCardStyles = makeStyles((theme: Theme) => ({
   },
   rateText: {
     color: "#FFF",
-    fontWeight: "bold",
+    fontWeight: 600,
     fontSize: 14,
   },
 }));

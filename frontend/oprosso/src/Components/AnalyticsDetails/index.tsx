@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { api } from "../../api/api";
 import { useAnalyticsPageStyles } from "../../Styles/useStyles";
 import { RoundedButton } from "../RoundedButton";
 import StepCard from "./Components/StepCard";
@@ -26,82 +27,135 @@ const AnalyticsDetails = () => {
     prototypeData,
     setPrototypeData,
   ] = React.useState<FullAnalyticsPrototype>();
-  const params = useParams();
+  const id = useParams<{ id: string }>()?.id;
   React.useEffect(() => {
-    setPrototypeData({
-      Data: {
-        title: "Приложение для путешествий по России",
-        description:
-          "Международная картографическая компания, выпускающая одноимённые электронные справочники с картами городов с 1999 года.",
-        views: 20,
-        rate: 4.3,
-        imageUrl:
-          "https://images.unsplash.com/photo-1618557415287-2e4a3eec7660?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
-        id: 2,
-        publicKey: "publicKey",
-        steps: [
-          {
-            id: 2,
-            stepTitle: "Поделиться информацией",
-            stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
-
-            Шаги:
-            • Открыть приложение 2ГИС• Ввести в поиск «Google»
-            • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
-            • Выбрать приложение и адресата, отправить текст.
-            (Триггер завершения выполнения задания на устройстве.)`,
-            question: ["Заметил ли ты длину пути"],
-          },
-        ],
-      },
-      Analytics: {
-        averageRate: 4.3,
-        stepAnalytics: [
-          {
-            step: {
-              id: 2,
-              stepTitle: "Поделиться информацией",
-              stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
-
-              Шаги:
-              • Открыть приложение 2ГИС• Ввести в поиск «Google»
-              • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
-              • Выбрать приложение и адресата, отправить текст.
-              (Триггер завершения выполнения задания на устройстве.)`,
-              question: ["Заметил ли ты длину пути"],
-            },
-            analynics: [
+    (async () => {
+      const analytics = await api.getAnalytics(id);
+      analytics &&
+        setPrototypeData({
+          Data: {
+            title: "Приложение для путешествий по России",
+            description:
+              "Международная картографическая компания, выпускающая одноимённые электронные справочники с картами городов с 1999 года.",
+            views: 20,
+            rate: 4.3,
+            imageUrl:
+              "https://cdn.dribbble.com/users/5031392/screenshots/15489774/media/8013dbe688d425fbf8040ece0a49be4a.png?compress=1&resize=1600x1200",
+            id: id,
+            publicKey: "publicKey",
+            steps: [
               {
-                title: "Оценка",
-                value: "4.5",
+                id: 2,
+                stepTitle: "Поделиться информацией",
+                stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
+  
+  Шаги:
+  • Открыть приложение 2ГИС• Ввести в поиск «Google»
+  • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
+  • Выбрать приложение и адресата, отправить текст.
+  (Триггер завершения выполнения задания на устройстве.)`,
+                question: ["Заметил ли ты длину пути"],
               },
               {
-                title: "Время выполнения",
-                value: "4:20",
-              },
-              {
-                title: "Посещённых экранов",
-                value: "10",
-              },
-              {
-                title: "Количество тапов",
-                value: "100",
+                id: 3,
+                stepTitle: "Поделиться информацией",
+                stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
+  
+  Шаги:
+  • Открыть приложение 2ГИС• Ввести в поиск «Google»
+  • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
+  • Выбрать приложение и адресата, отправить текст.
+  (Триггер завершения выполнения задания на устройстве.)`,
+                question: ["Заметил ли ты длину пути"],
               },
             ],
           },
-        ],
-        userAnalytics: [
-          {
-            taps: [],
-            rate: 3,
-            feedBack: [{ UserResponse: "Да, 5 км" }],
-            finalComment: "Норм дизайн",
-            isFinished: true,
-            stepId: 2,
+          Analytics: {
+            averageRate: 4.3,
+            stepAnalytics: [
+              {
+                step: {
+                  id: 2,
+                  stepTitle: "Поделиться информацией",
+                  stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
+  
+    Шаги:
+    • Открыть приложение 2ГИС• Ввести в поиск «Google»
+    • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
+    • Выбрать приложение и адресата, отправить текст.
+    (Триггер завершения выполнения задания на устройстве.)`,
+                  question: ["Заметил ли ты длину пути"],
+                },
+                analynics:
+                  // fetch
+                  [
+                    ...analytics,
+                    {
+                      title: "Посещённых экранов",
+                      value: "10",
+                    },
+                    {
+                      title: "Время выполнения",
+                      value: "89с",
+                    },
+                  ],
+              },
+              {
+                step: {
+                  id: 3,
+                  stepTitle: "Поделиться информацией",
+                  stepText: `В приложении 2ГИС воспользоваться функцией «Поделиться информацией» на примере организации Google.
+  
+    Шаги:
+    • Открыть приложение 2ГИС• Ввести в поиск «Google»
+    • В карточке организации в нижней части экрана нажать на кнопку «Поделиться»
+    • Выбрать приложение и адресата, отправить текст.
+    (Триггер завершения выполнения задания на устройстве.)`,
+                  question: ["Заметил ли ты длину пути"],
+                },
+                analynics: 
+                [
+                  {
+                    title: "Оценка",
+                    value: "3",
+                  },
+                  {
+                    title: "Время выполнения",
+                    value: "14:20",
+                  },
+                ],
+              },
+            ],
+            userAnalytics: [
+              {
+                taps: [],
+                rate: 3,
+                feedBack: [{ UserResponse: "Да, 5 км" }],
+                finalComment: "Норм дизайн",
+                isFinished: true,
+                stepId: 3,
+              },
+              {
+                taps: [],
+                rate: 2,
+                feedBack: [{ UserResponse: "Нет" }],
+                finalComment: "Da",
+                isFinished: true,
+                stepId: 3,
+              },
+              {
+                taps: [],
+                rate: 4,
+                feedBack: [{ UserResponse: "5 км" }],
+                finalComment: "Порнавилось",
+                isFinished: true,
+                stepId: 3,
+              },
+            ],
           },
-        ],
-      },
-    });
+        });
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!prototypeData) {
     return <LinearProgress />;
