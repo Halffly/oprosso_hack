@@ -27,9 +27,6 @@ const TestScreen = () => {
       }
     })();
   }, [id]);
-  const downloadFile = () => {
-    window.open(app?.file, "_blank");
-  };
   if (isLoading) {
     return <LinearProgress />;
   }
