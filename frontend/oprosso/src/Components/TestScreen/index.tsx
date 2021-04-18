@@ -68,9 +68,10 @@ const TestScreen = () => {
               backgroundColor: "#FE7B12",
               borderRadius: 48,
             }}
-            onClick={downloadFile}
+            href={app?.file || ""}
+            download
           >
-            <Box marginX={10} marginY={1} onClick={downloadFile}>
+            <Box marginX={10} marginY={1}>
               <Typography style={{ color: "#FFF", fontWeight: 600 }}>
                 Скачать
               </Typography>
