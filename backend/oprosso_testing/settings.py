@@ -7,7 +7,7 @@ SECRET_KEY = 'kye_o_by6fsh%u)*m7r2@l(o+j_5r-&_*cs6^7)bdh0(8xl!tf'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['halffly03.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -61,6 +61,15 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'halffly03$hackaton_oprosso',
+#         'USER': 'halffly03',
+#         'PASSWORD': 'AKBAR21200309D',
+#         'HOST': 'halffly03.mysql.pythonanywhere-services.com',
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
