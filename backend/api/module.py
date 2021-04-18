@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from api.models import Prototype, QuestionStep, File
+from api.models import Prototype, File, Analytics
 from api.models import Step
 
 
@@ -69,11 +69,11 @@ class Api:
 			"message": "The link to the mobile app was not specified correctly"
 		}
 
-	def ErrorNotExistPrototype(self, id):
+	def ErrorNotExistPrototype(self, id, service="prototype"):
 		return {
 			"status": 404,
 			"data": {},
-			"message": f"The prototype for this id({id}) does not exist"
+			"message": f"The {service} for this id({id}) does not exist"
 		}
 
 	@classmethod
@@ -119,7 +119,6 @@ class Api:
 			}
 		}
 
-
 	@classmethod
 	def SaveFile(cls, files):
 		print(files)
@@ -136,34 +135,129 @@ class Api:
 			"message": "Проблема с api"
 		})
 		return cls.answer
-		# POST = json.loads(body)
-		# data = {
-		# 	"title": POST.get("title"),
-		# 	"isShow": POST.get("isShow", False),
-		# 	"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
-		# }
-		# createKey = Appetize(POST.get("app")).createKey()
-		# print(createKey)
-		# if createKey.get("publicKey") is None:
-		# 	cls.answer.update(cls.ErrorLink(createKey))
-		# 	return cls.answer
-		# prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
-		# prototype.save()
-		# step = POST.get("step", [])
-		# for i in step:
-		# 	data = {
-		# 		"title": i.get("stepTitle"),
-		# 		"text": i.get("stepText"),
-		# 		"prototype": prototype,
-		# 	}
-		# 	questions = []
-		# 	for question in i.get("questions"):
-		# 		ques = QuestionStep(title=question)
-		# 		ques.save()
-		# 		questions.append(ques)
-		# 	data.update({"question": questions})
-		# 	Step(**data).save()
-		# cls.answer.update({
-		# 	"message": "Success Create"
-		# })
-		# return cls.answer
+
+	# POST = json.loads(body)
+	# data = {
+	# 	"title": POST.get("title"),
+	# 	"isShow": POST.get("isShow", False),
+	# 	"img": FILES.get("img") if FILES.get("img") is not None else POST.get("img")
+	# }
+	# createKey = Appetize(POST.get("app")).createKey()
+	# print(createKey)
+	# if createKey.get("publicKey") is None:
+	# 	cls.answer.update(cls.ErrorLink(createKey))
+	# 	return cls.answer
+	# prototype = Prototype(**data, publicKey=createKey.get("publicKey"))
+	# prototype.save()
+	# step = POST.get("step", [])
+	# for i in step:
+	# 	data = {
+	# 		"title": i.get("stepTitle"),
+	# 		"text": i.get("stepText"),
+	# 		"prototype": prototype,
+	# 	}
+	# 	questions = []
+	# 	for question in i.get("questions"):
+	# 		ques = QuestionStep(title=question)
+	# 		ques.save()
+	# 		questions.append(ques)
+	# 	data.update({"question": questions})
+	# 	Step(**data).save()
+	# cls.answer.update({
+	# 	"message": "Success Create"
+	# })
+	# return cls.answer
+	@staticmethod
+	def parseApp(app, domain) -> dict:
+		name = str(app)
+		if name.startswith("application/"):
+			name = name[len("application/"):]
+		return {
+			"id": app.id,
+			"file": domain + app.file.url if app.file else domain + "/media/" + str(app.file),
+			"date_create": app.date_create,
+			"name": name
+		}
+
+	def parseApps(self, apps, domain) -> dict:
+		return {"data": [self.parseApp(app, domain) for app in apps]}
+
+	@classmethod
+	def getApp(cls, request, id):
+		app = File.objects.filter(id=id).first()
+		if app is None:
+			cls.answer.update(cls.ErrorNotExistPrototype(id, "application"))
+			return cls.answer
+		cls.checkAnswer(cls)
+		cls.answer.update({"data": cls.parseApp(app, request)})
+		return cls.answer
+
+	def checkAnswer(self):
+		if self.answer['status'] != 200:
+			self.answer.update({
+				"status": 200,
+				"message": "Success",
+				"data": {}
+			})
+
+	@classmethod
+	def getApps(cls, request):
+		apps = File.objects.all()
+		cls.checkAnswer(cls)
+		cls.answer.update(cls.parseApps(cls, apps, request))
+		return cls.answer
+
+	@classmethod
+	def analytics(cls, app_id, **kwargs):
+		app = File.objects.filter(id=app_id).first()
+		cls.checkAnswer(cls)
+		cls.answer.update({"data": {}})
+		if app is None:
+			app = File.objects.filter(id=8).first()
+			analytic = Analytics.objects.filter(title__icontains=kwargs.get("title")).first()
+			if analytic is None:
+				if app is None:
+					return cls.answer
+				Analytics(**kwargs, app=app).save()
+				return cls.answer
+			analytic.value += kwargs.get("value", 1)
+			analytic.save()
+			return cls.answer
+		analytic = Analytics.objects.filter(title__icontains=kwargs.get("title")).first()
+		if analytic is None:
+			Analytics(**kwargs, app=app).save()
+			return cls.answer
+		analytic.value += kwargs.get("value", 1)
+		analytic.save()
+		return cls.answer
+
+	def clear(self):
+		apps = File.objects.all()
+		for i in apps:
+			if not i.file:
+				i.delete()
+		return self.answer
+
+	@staticmethod
+	def analyticsParse(analytics) -> dict:
+		return {
+			"data": [{
+				"id": analytic.id,
+				"title": analytic.title,
+				"value": analytic.value,
+			}
+				for analytic in analytics
+			]
+		}
+
+	@classmethod
+	def getAnalytics(cls, id):
+		app = File.objects.filter(id=id).first()
+		if app is None:
+			app = File.objects.filter(id=8).first()
+			if app is None:
+				return cls.answer
+		analytic = Analytics.objects.filter(app=app)
+		cls.checkAnswer(cls)
+		cls.answer.update(cls.analyticsParse(analytic))
+		return cls.answer
