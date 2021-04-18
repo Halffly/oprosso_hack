@@ -7,6 +7,9 @@ export const theme = createMuiTheme({
   },
   shadows: Array(25).fill("none") as Shadows,
   palette: {
+    background:{
+      paper: "#FFF"
+    },
     primary: { main: "#E8463D" },
   },
   overrides: {},

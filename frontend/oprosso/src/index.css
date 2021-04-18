@@ -16,3 +16,7 @@ code {
   background-color: inherit !important;
   border-radius: 18px !important;
 }
+
+.MuiToolbar-root {
+  background-color: #FFF !important;
+}
