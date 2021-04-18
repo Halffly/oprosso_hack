@@ -20,6 +20,7 @@ const Card = ({ title, views, rate, imageUrl, id, isGallery }: IProps) => {
     <div
       style={{
         background: `url(${imageUrl})`,
+        textAlign: "left",
       }}
       className={cardStyles.wrapper}
       onClick={redirectHandler}
@@ -46,7 +47,10 @@ const Card = ({ title, views, rate, imageUrl, id, isGallery }: IProps) => {
           <Box marginRight={1}>
             <EyeIcon />
           </Box>
-          <Typography className={cardStyles.mainTitle} component="h6">
+          <Typography
+            className={cardStyles.title}
+            component="h6"
+          >
             {views}
           </Typography>
         </Box>

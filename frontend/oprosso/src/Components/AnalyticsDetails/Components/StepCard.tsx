@@ -7,7 +7,13 @@ interface IProps extends Step {
   onClick: (id: number) => void;
   isActive?: boolean;
 }
-const StepCard = ({ onClick, stepTitle: title, stepText: text, id, isActive }: IProps) => {
+const StepCard = ({
+  onClick,
+  stepTitle: title,
+  stepText: text,
+  id,
+  isActive,
+}: IProps) => {
   return (
     <Box
       style={{
@@ -29,7 +35,9 @@ const StepCard = ({ onClick, stepTitle: title, stepText: text, id, isActive }: I
       >
         {title}
       </Typography>
-      <Typography variant="subtitle1">{text}</Typography>
+      <Typography variant="subtitle1" style={{ whiteSpace: "pre-wrap" }}>
+        {text}
+      </Typography>
     </Box>
   );
 };
